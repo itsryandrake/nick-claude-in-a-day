@@ -6,3 +6,4 @@ test-results/
 regions.json
 *.tsbuildinfo
 .DS_Store
+.vercel
