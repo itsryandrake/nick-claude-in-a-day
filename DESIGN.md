@@ -2,33 +2,39 @@
 
 ## Visual direction
 
-A calm technical folio. The drafting grid is functional only where the delivery architecture appears. The rest of the page uses open space, measured rules and asymmetric editorial rhythm.
+An Ential working note for Nick. The page uses a crisp light editorial surface, bold black sans-serif type and one saturated orange accent. The interactive delivery flow is the first viewport's visual focus. The design avoids dark AI styling, neon, glass, decorative grids and repeated card layouts.
+
+## Brand assets and provenance
+
+- Local logo: `public/brand/ential-black.svg`
+- First-party source: https://www.ential.com/images/brand/ential-black.svg
+- Retrieved from the official Ential website for this project.
+- SHA-256: `7cb8b00b90fb9cdcc7334016282eddac57fbcd4b22cf6303140aac4d0dcade71`
 
 ## Tokens
 
-- Ground: `#edf4f7`
-- Paper: `#f8fbfc`
-- Ink: `#10223a`
-- Muted: `#42586b`
-- Accent: `#176f9f`
-- Soft accent: `#dceef6`
-- Corners: 14px for interactive containers; circles only for timeline markers
-- Typeface: Nunito Sans Variable, with tabular numerals for sequence labels
-
-Dark mode uses the same cool blue family with light text and a brighter blue accent.
+- Ground: `#F7F6F2`
+- Paper: `#FFFFFF`
+- Ink: `#11100F`
+- Muted: `#5B5752`
+- Accent: `#F74603`
+- Accent dark: `#C83300`
+- Soft accent: `#FFF0E9`
+- Corners: 14px for major surfaces, 12px for interactive nodes
+- Typeface: Nunito Sans Variable with tight display tracking
 
 ## Layout
 
-The page uses a 1240px content frame, asymmetric hero, staggered outcome track, interactive architecture canvas, two-column Skills/model split, linear subagent sequence and paired reference links. Mobile layouts become a strict single column below 768px.
+The page uses a 1320px frame. Desktop opens with a split composition: direct note to Nick on the left and the working delivery flow on the right. Later sections change rhythm between sticky editorial lists, a dark model panel, a three-part linear method and a source index. Below 901px the page becomes a strict single column.
 
 ## Interaction
 
-The architecture node is the signature interaction. Selecting a node updates one stable detail region. Hover lifts nodes by 3px; active state is communicated by border, fill and `aria-pressed`, not color alone.
+The architecture flow is the signature interaction. Build path: Claude Code to GitHub to Vercel to the app. Domain path: GoDaddy DNS points to Vercel. Selecting any node updates one stable detail region. The selected state uses border, fill and `aria-pressed`.
 
 ## Motion
 
-One authored entrance settles the hero from a small blur and clip. All other movement is direct interaction feedback. `prefers-reduced-motion` removes authored animation and smooth scrolling.
+One entrance sequence establishes hierarchy in the hero. Hover and active movement provide direct feedback. Reduced-motion mode removes the entrance and smooth scrolling while preserving every state.
 
 ## Accessibility
 
-Semantic landmarks, visible skip link and focus rings, keyboard-operable node buttons, descriptive diagram text, minimum 44px controls, AA-oriented tokens and responsive reading order are required.
+Semantic landmarks, a visible skip link, strong focus rings, keyboard-operable node buttons, 44px minimum controls, AA contrast and responsive reading order are required. The logo has intrinsic dimensions to prevent layout shift.
