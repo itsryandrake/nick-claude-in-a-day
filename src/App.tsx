@@ -1,39 +1,37 @@
 import { useEffect, useId, useRef, useState } from 'react'
 import { Check, Copy } from '@phosphor-icons/react'
+import { PromptArt, type ArtKind } from './PromptArt'
+import { SystemMap } from './SystemMap'
 
-const flow = [
-  { name: 'Claude Code', action: 'Edit and test', logo: '/brand/architecture/claude.svg' },
-  { name: 'GitHub', action: 'Commit and push', logo: '/brand/architecture/github.svg' },
-  { name: 'Vercel', action: 'Build and deploy', logo: '/brand/architecture/vercel.svg' },
-  { name: "Nick's app", action: 'Open the app', logo: '/brand/ential-black.svg' },
-]
-
-const prompts = [
+const prompts: { label: string; art: ArtKind; text: string }[] = [
   {
     label: 'Work',
-    text: "Inspect the current repo first. Map how plugins are listed, sold and delivered, then propose a focused catalogue page for one plugin with an original campaign and Stripe Checkout in test mode. Preserve the existing architecture and working behaviour. Propose the data model and UI before implementation, then add tests. Protect customer and payment data. Ask before external integrations, migrations, deployment, live payments, publishing or any irreversible action.",
+    art: 'work',
+    text: "Inspect my current repo first. Map how my plugins are listed, sold and delivered, then propose a focused catalogue page for one plugin with an original campaign and Stripe Checkout in test mode. Preserve my existing architecture and working behaviour. Propose the data model and UI before you implement anything, then add tests. Protect my customer and payment data. Ask me before external integrations, migrations, deployment, live payments, publishing or any irreversible action.",
   },
   {
     label: 'Family',
-    text: "Inspect Nick's current app first. Propose a Family module with a baby countdown, shared appointments, a preparation checklist, private documents, photos and notes, plus age appropriate milestone prompts after birth. Do not invent names, dates or medical facts. Preserve the existing architecture and working behaviour. Propose the data model and UI before implementation, then add tests. Protect family data. Ask before external integrations, migrations, deployment, messages, calendar changes or any irreversible action.",
+    art: 'family',
+    text: "Inspect my current app first. Propose a Family module with a baby countdown, shared appointments, a preparation checklist, private documents, photos and notes, plus age appropriate milestone prompts after the birth. Don't invent names, dates or medical facts. Ask me for them. Preserve my existing architecture and working behaviour. Propose the data model and UI before you implement anything, then add tests. Protect my family's data. Ask me before external integrations, migrations, deployment, messages, calendar changes or any irreversible action.",
   },
   {
     label: 'Health & Fitness',
-    text: "Inspect Nick's current app first. Propose a Health & Fitness module for workouts, sleep, weight trends, authorised health data imports and a weekly review. Use read only defaults and make no medical claims. Preserve the existing architecture and working behaviour. Propose the data model and UI before implementation, then add tests. Protect health data. Ask before external integrations, migrations, deployment, account connections or any irreversible action.",
+    art: 'health',
+    text: "Inspect my current app first. Propose a Health & Fitness module for my workouts, sleep, weight trends, authorised health data imports and a weekly review. Use read only defaults and make no medical claims. Preserve my existing architecture and working behaviour. Propose the data model and UI before you implement anything, then add tests. Protect my health data. Ask me before external integrations, migrations, deployment, account connections or any irreversible action.",
   },
   {
     label: 'Finances',
-    text: "Inspect Nick's current app first. Propose a Finances module for bills, subscriptions, due dates, a read only account overview, a monthly household review and alerts that never spend money automatically. Preserve the existing architecture and working behaviour. Propose the data model and UI before implementation, then add tests for dates and totals. Protect financial data. Ask before external integrations, migrations, deployment, payments, bank connections or any irreversible action.",
+    art: 'finances',
+    text: "Inspect my current app first. Propose a Finances module for our bills, subscriptions, due dates, a read only overview of my accounts, a monthly household review and alerts that never spend money automatically. Preserve my existing architecture and working behaviour. Propose the data model and UI before you implement anything, then add tests for dates and totals. Protect my financial data. Ask me before external integrations, migrations, deployment, payments, bank connections or any irreversible action.",
   },
   {
     label: 'Household & admin',
-    text: "Inspect Nick's current app first. Propose a Household & admin module for shared reminders, documents, open loops and one family calendar. Show who owns each item and what needs approval. Preserve the existing architecture and working behaviour. Propose the data model and UI before implementation, then add tests. Protect private documents. Ask before external integrations, migrations, deployment, messages, bookings or any irreversible action.",
-  },
-  {
-    label: 'Save to GitHub',
-    text: 'Inspect the current repo and review the full diff. Run the relevant tests and production build. Explain any failures and propose a clear commit message. If the checks pass, create the local commit. Stop and ask before pushing to GitHub or triggering a deployment.',
+    art: 'household',
+    text: "Inspect my current app first. Propose a Household & admin module for our shared reminders, documents, open loops and one family calendar. Show who owns each item and what needs my approval. Preserve my existing architecture and working behaviour. Propose the data model and UI before you implement anything, then add tests. Protect our private documents. Ask me before external integrations, migrations, deployment, messages, bookings or any irreversible action.",
   },
 ]
+
+const githubPrompt = "Check whether GitHub has commits from my other computer that this copy doesn't have yet. If it does, pull them first and tell me what changed. Then review my full diff, run the relevant tests and the production build, and explain any failures. Suggest a clear commit message and, if the checks pass, commit locally. Stop and ask me before you push to GitHub or trigger a deployment."
 
 const resources = [
   { name: 'skills.sh', note: 'Agent skills directory', href: 'https://skills.sh/', logo: '/brand/resources/skills.ico' },
@@ -45,7 +43,7 @@ const resources = [
   { name: 'Wispr Flow', note: 'Voice to text', href: 'https://wisprflow.ai/', logo: '/brand/resources/wispr-flow.png' },
 ]
 
-function CopyPrompt({ label, children }: { label: string; children: string }) {
+function CopyPrompt({ label, art, children }: { label: string; art: ArtKind; children: string }) {
   const [status, setStatus] = useState<'idle' | 'copied' | 'failed'>('idle')
   const resetTimer = useRef<number | undefined>(undefined)
   const promptId = useId()
@@ -65,7 +63,7 @@ function CopyPrompt({ label, children }: { label: string; children: string }) {
 
   return (
     <article className="prompt-block">
-      <h3>{label}</h3>
+      <div className="prompt-label"><h3>{label}</h3><PromptArt kind={art} /></div>
       <p id={promptId}>{children}</p>
       <button type="button" onClick={copyPrompt} aria-describedby={promptId}>
         {status === 'copied' ? <Check size={17} aria-hidden="true" /> : <Copy size={17} aria-hidden="true" />}
@@ -84,7 +82,7 @@ function App() {
       <a className="skip-link" href="#main">Skip to Nick's recap</a>
       <header className="site-header">
         <a href="#top" aria-label="Ential, back to top"><img src="/brand/ential-black.svg" alt="Ential" width="300" height="78" /></a>
-        <a href="#architecture">How it goes live</a>
+        <a href="#architecture">How it all works</a>
       </header>
 
       <main id="main">
@@ -105,34 +103,20 @@ function App() {
             <li><strong>Wispr Flow</strong><span>Speak the rough draft, then edit it into your own words.</span></li>
             <li><strong>Skills and subagents</strong><span>Reuse a method with a skill. Split independent work across subagents.</span></li>
             <li><strong>GIS onboarding</strong><span>Put short guidance where a new user gets stuck.</span></li>
-            <li><strong>GitHub and Vercel</strong><span>Commit a version, push it to GitHub, then let Vercel deploy it.</span></li>
+            <li><strong>GitHub and Vercel</strong><span>Pull when you sit down, push before you get up. Vercel deploys every push.</span></li>
             <li><strong>Personal dashboard</strong><span>Start with the family information you check every week.</span></li>
           </ul>
         </section>
 
         <section className="page-section architecture" id="architecture" aria-labelledby="architecture-title">
           <div className="section-heading">
-            <h2 id="architecture-title">How the app goes live</h2>
-            <p>Claude Code changes files locally. A commit records a version. Push sends it to GitHub. Vercel deploys from GitHub.</p>
+            <h2 id="architecture-title">How it all works together</h2>
+            <p>You can build on the laptop or the desktop. GitHub keeps them in sync, Vercel puts the site live and Supabase holds the data. Click any piece to see what it does.</p>
           </div>
 
-          <figure className="system-flow">
-            <figcaption className="visually-hidden">Claude Code edits and tests the local project. A commit records a version and push sends it to GitHub. Vercel builds and deploys from GitHub. GoDaddy DNS points the domain to Vercel. Stripe is an optional integration with Nick's app.</figcaption>
-            <ol className="core-flow" aria-label="Deployment path from Claude Code to Nick's app">
-              {flow.map((item) => (
-                <li key={item.name}>
-                  <img src={item.logo} alt="" width="48" height="48" />
-                  <div><strong>{item.name}</strong><span>{item.action}</span></div>
-                </li>
-              ))}
-            </ol>
-            <div className="secondary-flow" aria-label="Secondary connections">
-              <p><img src="/brand/architecture/godaddy.svg" alt="" width="26" height="26" /><strong>GoDaddy DNS</strong><span aria-hidden="true">→</span>Vercel</p>
-              <p><img src="/brand/architecture/stripe.svg" alt="" width="26" height="26" /><strong>Stripe</strong><span aria-hidden="true">→</span>Nick's app <small>optional checkout</small></p>
-            </div>
-          </figure>
+          <SystemMap />
 
-          <CopyPrompt label="Safe GitHub prompt">Inspect the current repo and review the full diff. Run the relevant tests and production build. Explain any failures and propose a clear commit message. If the checks pass, create the local commit. Stop and ask before pushing to GitHub or triggering a deployment.</CopyPrompt>
+          <CopyPrompt label="Save to GitHub" art="github">{githubPrompt}</CopyPrompt>
         </section>
 
         <section className="page-section" id="build" aria-labelledby="build-title">
@@ -164,7 +148,7 @@ function App() {
             <h2 id="prompts-title">Prompts for Nick's app</h2>
             <p>Run one prompt at a time from the project folder.</p>
           </div>
-          <div className="prompt-list">{prompts.slice(0, 5).map((prompt) => <CopyPrompt key={prompt.label} label={prompt.label}>{prompt.text}</CopyPrompt>)}</div>
+          <div className="prompt-list">{prompts.map((prompt) => <CopyPrompt key={prompt.label} label={prompt.label} art={prompt.art}>{prompt.text}</CopyPrompt>)}</div>
         </section>
 
         <section className="page-section models" id="models" aria-labelledby="models-title">

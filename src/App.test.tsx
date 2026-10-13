@@ -18,18 +18,24 @@ describe('Claude in a Day editorial note', () => {
     }
   })
 
-  it('states the deployment path and secondary branches accurately', () => {
+  it('explains push, pull, Vercel and Supabase without Stripe', async () => {
+    const user = userEvent.setup()
     render(<App />)
-    const summary = document.querySelector('.system-flow figcaption')
-    expect(summary).toHaveTextContent(/A commit records a version/i)
-    expect(summary).toHaveTextContent(/push sends it to GitHub/i)
-    expect(summary).toHaveTextContent(/Vercel builds and deploys from GitHub/i)
+    expect(screen.getByRole('heading', { name: 'How it all works together' })).toBeInTheDocument()
+    const map = document.querySelector('.system-map') as HTMLElement
+    const summary = map.querySelector('figcaption')
+    expect(summary).toHaveTextContent(/laptop and a desktop/i)
+    expect(summary).toHaveTextContent(/Push sends commits from either computer to GitHub/i)
+    expect(summary).toHaveTextContent(/pull brings the latest commits back down/i)
+    expect(summary).toHaveTextContent(/Supabase stores/i)
     expect(summary).toHaveTextContent(/GoDaddy DNS points the domain to Vercel/i)
-    expect(summary).toHaveTextContent(/Stripe is an optional integration/i)
-    const flow = screen.getByRole('list', { name: "Deployment path from Claude Code to Nick's app" })
-    for (const step of ['Claude Code', 'GitHub', 'Vercel', "Nick's app"]) {
-      expect(within(flow).getByText(step)).toBeInTheDocument()
-    }
+    expect(map.textContent).not.toMatch(/Stripe/)
+    expect(map.querySelector('image[href*="ential"]')).toBeNull()
+
+    await user.click(within(map).getByRole('button', { name: '2. Pull' }))
+    expect(within(map).getByRole('heading', { name: /Pull brings the latest/i })).toBeInTheDocument()
+    await user.click(within(map).getByRole('button', { name: 'Supabase: explain' }))
+    expect(within(map).getByRole('heading', { name: 'Supabase' })).toBeInTheDocument()
   })
 
   it('includes safe prompts for work and personal modules inside Nick app', () => {
@@ -38,11 +44,13 @@ describe('Claude in a Day editorial note', () => {
       expect(screen.getAllByRole('heading', { name: heading }).length).toBeGreaterThan(0)
     }
     const promptText = document.querySelector('.prompt-list')?.textContent ?? ''
-    expect(promptText).toContain('Inspect Nick\'s current app first')
-    expect(promptText).toContain('Preserve the existing architecture and working behaviour')
-    expect(promptText).toContain('Propose the data model and UI before implementation')
+    expect(promptText).toContain('Inspect my current app first')
+    expect(promptText).not.toMatch(/Nick/)
+    expect(promptText).toContain('Preserve my existing architecture and working behaviour')
+    expect(promptText).toContain('Propose the data model and UI before you implement anything')
     expect(promptText).toContain('Protect')
-    expect(promptText).toContain('Ask before external integrations, migrations, deployment')
+    expect(promptText).toContain('Ask me before external integrations, migrations, deployment')
+    expect(document.querySelectorAll('.prompt-art')).toHaveLength(6)
   })
 
   it('copies a prompt and reports clipboard failure', async () => {
@@ -51,7 +59,7 @@ describe('Claude in a Day editorial note', () => {
     const buttons = screen.getAllByRole('button', { name: 'Copy prompt' })
     expect(buttons).toHaveLength(6)
     await user.click(buttons[2])
-    await expect(navigator.clipboard.readText()).resolves.toContain("Inspect Nick's current app first")
+    await expect(navigator.clipboard.readText()).resolves.toContain('Inspect my current app first')
     expect(screen.getByRole('button', { name: 'Copied' })).toBeInTheDocument()
 
     vi.spyOn(navigator.clipboard, 'writeText').mockRejectedValueOnce(new Error('blocked'))
