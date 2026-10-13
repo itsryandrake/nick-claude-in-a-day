@@ -17,7 +17,7 @@ The page uses the official Ential logo and locally bundled product marks. Every 
 | `public/brand/architecture/github.svg` | https://cdn.simpleicons.org/github | `476ba7aa67b86da7d6e7567b08a4bf0eb1a2fd28da5fc243f8ee39a2f1ea6773` |
 | `public/brand/architecture/vercel.svg` | https://cdn.simpleicons.org/vercel | `075b9d221ef5a7ea63d85f140bd2d63007f31d3ed8ceec011abc3ffd529827e3` |
 | `public/brand/architecture/godaddy.svg` | https://cdn.simpleicons.org/godaddy | `796a2af71b168ca9410eb5148f2ab39d2082c4c470c4b6822b46d2dfa4a21d12` |
-| `public/brand/architecture/stripe.svg` | https://cdn.simpleicons.org/stripe | `7576775bf9915b696bbb9162268f5c56147d2b4221a76ac6a9ca92835239b7e9` |
+| `public/brand/architecture/supabase.svg` | https://cdn.simpleicons.org/supabase | `75f9566421d97d4f1d8d7f34526189fd6e727ca83987432fc2477c2fc8388086` |
 
 ### Reference marks
 
@@ -45,12 +45,12 @@ Simple Icons assets use the Simple Icons CC0 1.0 licence. Product names and mark
 
 ## Layout
 
-The reading frame is 1120px wide. Major sections use a narrow heading column and a wider content column. The architecture section uses one horizontal logo flow on desktop and one vertical timeline on mobile. Work and Personal share two plain columns. Prompts, models and references are rows separated by rules.
+The reading frame is 1120px wide. Major sections use a narrow heading column and a wider content column. The architecture section is one interactive SVG map: laptop and desktop push to and pull from GitHub, Vercel deploys the website, Supabase stores its data and GoDaddy points the domain. Step buttons and clickable nodes swap a plain explanation below the map. On narrow screens the map scrolls sideways. Work and Personal share two plain columns. Prompts, models and references are rows separated by rules.
 
 ## Interaction and accessibility
 
-Copy buttons are the only repeating controls. They confirm success in place and expose a live status message. The page uses semantic landmarks, visible focus, 44px controls, local assets, WCAG AA contrast and a 390px layout without horizontal overflow. Reduced motion removes the one short page entrance.
+Copy buttons and the map step buttons are the only repeating controls. Each prompt carries a small looping SVG illustration that is hidden from assistive tech. They confirm success in place and expose a live status message. The page uses semantic landmarks, visible focus, 44px controls, local assets, WCAG AA contrast and a 390px layout without horizontal overflow. Reduced motion removes the page entrance, the map packets and the prompt illustrations' movement.
 
 ## Copy rules
 
-The page speaks directly to Nick in short, natural sentences. It uses no long dashes, inflated claims, decorative labels or sales language. Prompts inspect the repo first, preserve working behaviour, propose a data model and UI, add tests, protect sensitive data and ask before external or irreversible actions.
+The page speaks directly to Nick in short, natural sentences. It uses no long dashes, inflated claims, decorative labels or sales language. Prompts are written in Nick's own voice (first person) because he pastes them. They inspect the repo first, preserve working behaviour, propose a data model and UI, add tests, protect sensitive data and ask before external or irreversible actions.

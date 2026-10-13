@@ -10,7 +10,7 @@ test('renders the flat editorial note without overflow, broken assets or serious
 
   await page.goto('/')
   await expect(page.getByRole('heading', { name: /Nick, here is what to build next/i })).toBeVisible()
-  await expect(page.getByRole('heading', { name: 'How the app goes live' })).toBeAttached()
+  await expect(page.getByRole('heading', { name: 'How it all works together' })).toBeAttached()
   await expect(page.getByRole('heading', { name: 'Build next', exact: true })).toBeAttached()
 
   expect(await page.evaluate(() => document.documentElement.scrollWidth > document.documentElement.clientWidth)).toBe(false)
@@ -30,16 +30,17 @@ test('renders the flat editorial note without overflow, broken assets or serious
   await page.screenshot({ path: `.impeccable/review/${testInfo.project.name}.png`, fullPage: true })
 })
 
-test('architecture is compact, ordered and accurate', async ({ page }) => {
+test('architecture map is interactive and explains push and pull', async ({ page }) => {
   await page.goto('/')
-  const flow = page.getByRole('list', { name: "Deployment path from Claude Code to Nick's app" })
-  await expect(flow).toBeVisible()
-  await expect(flow.getByRole('listitem')).toHaveCount(4)
-  const summary = page.locator('.system-flow figcaption')
-  await expect(summary).toContainText(/A commit records a version/i)
-  await expect(summary).toContainText(/push sends it to GitHub/i)
-  await expect(summary).toContainText(/GoDaddy DNS points the domain to Vercel/i)
-  await expect(summary).toContainText(/Stripe is an optional integration/i)
+  const map = page.locator('.system-map')
+  await expect(map).toBeVisible()
+  await expect(map).not.toContainText('Stripe')
+  await map.getByRole('button', { name: '1. Push' }).click()
+  await expect(map.getByRole('heading', { name: /Push sends your work up to GitHub/ })).toBeVisible()
+  await map.getByRole('button', { name: 'Desktop: explain' }).click()
+  await expect(map.getByRole('heading', { name: 'Desktop' })).toBeVisible()
+  await map.getByRole('button', { name: 'Play the loop' }).click()
+  await expect(map.getByRole('button', { name: 'Pause' })).toBeVisible()
 })
 
 test('copy control copies a safe prompt and shows feedback', async ({ page, context }) => {
@@ -48,7 +49,7 @@ test('copy control copies a safe prompt and shows feedback', async ({ page, cont
   const familyPrompt = page.locator('.prompt-list .prompt-block').filter({ has: page.getByRole('heading', { name: 'Family' }) })
   await familyPrompt.getByRole('button', { name: 'Copy prompt' }).click()
   await expect(familyPrompt.getByRole('button', { name: 'Copied' })).toBeVisible()
-  expect(await page.evaluate(() => navigator.clipboard.readText())).toContain("Inspect Nick's current app first")
+  expect(await page.evaluate(() => navigator.clipboard.readText())).toContain('Inspect my current app first')
 })
 
 test('required models, modules and resources are present', async ({ page }) => {
