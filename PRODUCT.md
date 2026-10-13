@@ -8,50 +8,49 @@ web
 
 ## Stack
 
-delegated: Vite + React + TypeScript with native CSS, chosen for a lightweight static project with no backend.
+Vite, React, TypeScript and native CSS. The site is static and has no backend.
 
 ## Users
 
-Nick is the primary reader. He is reviewing and acting on the outcomes of a full-day Claude workshop. Ryan is the sender and needs one polished linkable artifact rather than a long meeting document.
+Nick is the primary reader. He is reviewing and acting on the outcomes of a full-day Claude workshop. Ryan is the sender and needs one polished link instead of a long meeting document.
 
 ## Product purpose
 
-Turn Friday's workshop into a concise, practical recap that preserves the ideas, explains the technical delivery path, and makes the next actions obvious.
+Turn Friday's workshop into a practical follow-up with an accurate delivery diagram, clear DSQ work, a useful personal track and prompts Nick can copy into Claude Code.
 
 ## Positioning
 
-The page connects the workshop ideas to an accurate interactive delivery flow, so Nick can see what to try and how a future app would reach him.
-
-## Operating context
-
-The recap covers Claude artifacts, Wispr Flow, onboarding inside Nick's GIS app, a finance and personal view for Nick and family, reusable Skills, Claude Code subagents, model choices, design references, and the Redbark trial deadline.
+The page connects workshop ideas to concrete work. It shows how a project reaches production, what to build for DSQ and how a small family operating system could help before the baby arrives.
 
 ## Capabilities and constraints
 
 - One responsive static page with no backend.
-- Interactive architecture nodes reveal concise details.
-- GoDaddy DNS points the domain to Vercel. GitHub changes can trigger Vercel deployments. Claude Code edits a local checkout and prepares commits.
-- No publishing, deployment, remote repository, push, or messages.
-- Model claims must be grounded in official Anthropic sources.
+- Interactive architecture products reveal concise details.
+- Copy controls provide safe starter prompts.
+- GoDaddy DNS points the custom domain to Vercel. GitHub changes can trigger Vercel deployments. Claude Code edits a local checkout and prepares commits.
+- Stripe is an optional DSQ integration, not part of the deployment chain.
+- Model claims must use current official Anthropic sources.
+- No invented baby name, sex, dates, health facts, financial values, metrics or product claims.
 
 ## Brand commitments
 
-The artifact is an Ential follow-up to "Claude in a Day". It uses the official Ential logo and the Ential orange `#F74603` against crisp black, white and off-white surfaces. The voice is Ryan speaking directly to Nick: warm, practical and brief. Avoid generic card grids, decorative labels, neon or dark AI styling, invented claims and irrelevant metrics.
+The artifact is an Ential follow-up to Claude in a Day. It uses the official Ential logo and Ential orange `#F74603` against black, white and off-white surfaces. The voice is Ryan speaking directly to Nick: warm, practical and brief. Avoid generic card grids, decorative rules, neon AI styling, fake dashboards and repeated split-header layouts.
 
 ## Evidence on hand
 
-- Ential brand source: https://www.ential.com/ and the official black logo at https://www.ential.com/images/brand/ential-black.svg.
-- Workshop source: https://claudepub.vercel.app/, especially slide 9 on reusable Skills, tools, connectors and model choices.
-- Official Anthropic launch pages for Claude Sonnet 5.5 and Claude Haiku 5.5.
-- No customer metrics, testimonials, screenshots or finished product claims were supplied. None may be invented.
+- Ential brand source: https://www.ential.com/
+- Workshop source: https://claudepub.vercel.app/
+- Official Anthropic pages for Claude Opus 5.5, Claude Sonnet 5.5 and Claude Haiku 5.5.
+- The workshop note says the baby is due in about five weeks. It supplies no name, sex or exact date.
+- No customer metrics, testimonials, screenshots or finished product claims were supplied.
 
 ## Product principles
 
-1. Make the Thursday action visible without turning the page into an alert.
-2. Show the build path and domain path accurately.
-3. Use plain language Nick can revisit after the workshop.
-4. Keep Skills, model choice and delegated subagents as distinct concepts.
-5. Keep human review and judgment explicit.
+1. Make the Thursday Redbark action easy to find.
+2. Explain commit, push, deploy, DNS and optional payments accurately.
+3. Give DSQ work and personal use separate, practical tracks.
+4. Keep examples honest and private actions behind approval.
+5. Make every prompt safe to copy into an existing project.
 
 ## Accessibility and inclusion
 

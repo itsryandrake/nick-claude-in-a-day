@@ -1,95 +1,114 @@
 import AxeBuilder from '@axe-core/playwright'
 import { expect, test } from '@playwright/test'
 
-test('renders without overflow, failed assets, console errors or serious accessibility issues', async ({ page }, testInfo) => {
+test('renders the revised page without overflow, broken assets or serious accessibility issues', async ({ page }, testInfo) => {
   const errors: string[] = []
-  const failedAssets: string[] = []
+  const failedResponses: string[] = []
   page.on('console', (message) => {
     if (message.type() === 'error') errors.push(message.text())
   })
   page.on('pageerror', (error) => errors.push(error.message))
   page.on('response', (response) => {
-    if (response.status() >= 400) failedAssets.push(`${response.status()} ${response.url()}`)
+    if (response.status() >= 400) failedResponses.push(`${response.status()} ${response.url()}`)
   })
 
   await page.goto('/')
-  await expect(page.getByRole('heading', { name: /Nick, here’s what we can build next/i })).toBeVisible()
-  await expect(page.getByRole('img', { name: 'Ential' }).first()).toBeVisible()
-  await page.waitForTimeout(250)
+  await expect(page.getByRole('heading', { name: /Nick, this is what to build next/i })).toBeVisible()
+  await expect(page.getByRole('heading', { name: /Sell the plugins and improve the product/i })).toBeVisible()
+  await expect(page.getByRole('heading', { name: 'Baby profile' })).toBeVisible()
 
   const overflow = await page.evaluate(() => document.documentElement.scrollWidth > document.documentElement.clientWidth)
   expect(overflow).toBe(false)
 
-  await page.getByRole('button', { name: /GoDaddy.*Controls the domain and DNS/i }).click()
-  await expect(page.getByText(/Those records point the public domain to Vercel/i)).toBeVisible()
+  for (const image of await page.locator('img').all()) {
+    await image.scrollIntoViewIfNeeded()
+    await expect(image).toBeVisible()
+    expect(await image.evaluate((element) => (element as HTMLImageElement).complete && (element as HTMLImageElement).naturalWidth > 0)).toBe(true)
+  }
 
   const results = await new AxeBuilder({ page }).analyze()
   const blockers = results.violations.filter((violation) => violation.impact === 'critical' || violation.impact === 'serious')
   expect(blockers).toEqual([])
   expect(errors).toEqual([])
-  expect(failedAssets).toEqual([])
+  expect(failedResponses).toEqual([])
 
-  await page.evaluate(() => {
-    if (document.activeElement instanceof HTMLElement) document.activeElement.blur()
-    window.scrollTo(0, 0)
-  })
-  await page.waitForTimeout(100)
-  await page.screenshot({
-    path: testInfo.project.name === 'mobile' ? '.impeccable/review/mobile.png' : '.impeccable/review/desktop.png',
-    fullPage: true,
-  })
+  await page.evaluate(() => window.scrollTo(0, 0))
+  await page.screenshot({ path: `.impeccable/review/${testInfo.project.name}.png`, fullPage: true })
 })
 
-test('reduced motion removes authored animation', async ({ browser }) => {
-  const context = await browser.newContext({ reducedMotion: 'reduce', viewport: { width: 390, height: 844 } })
-  const page = await context.newPage()
-  await page.goto('http://127.0.0.1:4173/')
-  const animationName = await page.locator('.hero-copy').evaluate((element) => getComputedStyle(element).animationName)
-  expect(animationName).toBe('none')
-  await context.close()
+test('architecture remains accurate and works with keyboard input', async ({ page }) => {
+  await page.goto('/')
+  await expect(page.getByRole('group', { name: 'Core deployment path from Claude Code to the live app' })).toBeVisible()
+  const stripe = page.getByRole('button', { name: /Stripe.*Optional checkout/i })
+  await stripe.focus()
+  await expect(stripe).toBeFocused()
+  await page.keyboard.press('Enter')
+  await expect(stripe).toHaveAttribute('aria-pressed', 'true')
+  await expect(page.getByText(/not part of the core deployment chain/i)).toBeVisible()
+  await expect(page.getByText(/A commit creates a local version/i)).toBeAttached()
+  await expect(page.getByText(/A push sends commits to GitHub/i)).toBeAttached()
 })
 
-test('normal motion loads visibly and stays accessible', async ({ browser }) => {
-  const context = await browser.newContext({ reducedMotion: 'no-preference', viewport: { width: 1440, height: 1000 } })
-  const page = await context.newPage()
-  await page.goto('http://127.0.0.1:4173/')
-  await expect(page.locator('.hero-copy')).toHaveCSS('animation-name', 'hero-in')
-  await expect(page.locator('.hero-flow')).toHaveCSS('animation-name', 'flow-in')
-  await page.waitForTimeout(800)
-  await expect(page.getByRole('heading', { name: /Nick, here’s what we can build next/i })).toBeVisible()
-  const results = await new AxeBuilder({ page }).analyze()
-  const blockers = results.violations.filter((violation) => violation.impact === 'critical' || violation.impact === 'serious')
-  expect(blockers).toEqual([])
-  await context.close()
+test('copy controls copy safe prompts and show feedback', async ({ page, context }) => {
+  await context.grantPermissions(['clipboard-read', 'clipboard-write'])
+  await page.goto('/')
+  const firstCopy = page.getByRole('button', { name: 'Copy prompt' }).first()
+  await firstCopy.click()
+  await expect(page.getByRole('button', { name: 'Copied' })).toBeVisible()
+  expect(await page.evaluate(() => navigator.clipboard.readText())).toContain('Inspect the existing DSQ project first')
 })
 
-test('layout stays intact at breakpoint edges', async ({ page }) => {
-  for (const width of [767, 768, 899, 900, 1179, 1180, 1440]) {
+test('model names, baby categories and required resources are present', async ({ page }) => {
+  await page.goto('/')
+  for (const heading of ['Claude Opus 5.5', 'Claude Sonnet 5.5', 'Claude Haiku 5.5', 'Before birth', 'Once born', 'Family record', 'Milestones']) {
+    await expect(page.getByRole('heading', { name: heading })).toBeAttached()
+  }
+  for (const resource of ['Taste Skill', 'Impeccable', 'Variant', 'Dribbble', 'Behance']) {
+    await expect(page.getByRole('link', { name: new RegExp(resource, 'i') })).toBeAttached()
+  }
+  await expect(page.getByRole('link', { name: /Open Wispr Flow/i })).toBeAttached()
+  await expect(page.getByText(/Redbark trial ending Thursday/i)).toBeAttached()
+})
+
+test('responsive layouts have no horizontal overflow at key widths', async ({ page }) => {
+  for (const width of [390, 767, 768, 1079, 1080, 1081, 1279, 1280, 1281, 1379, 1380, 1381, 1440]) {
     await page.setViewportSize({ width, height: 900 })
     await page.goto('/')
     const overflow = await page.evaluate(() => document.documentElement.scrollWidth > document.documentElement.clientWidth)
     expect(overflow, `horizontal overflow at ${width}px`).toBe(false)
-    await expect(page.getByRole('button', { name: /Vercel.*Builds and hosts the site/i })).toBeVisible()
-    await expect(page.getByRole('button', { name: /The app.*What people open and use/i })).toBeVisible()
+    const map = await page.locator('.architecture-map').boundingBox()
+    expect(map).not.toBeNull()
+    for (const node of [
+      page.getByRole('button', { name: /Vercel.*Build and deploy/i }),
+      page.getByRole('button', { name: /Live app.*Open the published site/i }),
+    ]) {
+      await expect(node).toBeVisible()
+      const box = await node.boundingBox()
+      expect(box).not.toBeNull()
+      expect(box!.x, `node clipped on the left at ${width}px`).toBeGreaterThanOrEqual(map!.x - 1)
+      expect(box!.x + box!.width, `node clipped on the right at ${width}px`).toBeLessThanOrEqual(map!.x + map!.width + 1)
+    }
+    for (const section of ['.recap', '.models', '.references']) {
+      const box = await page.locator(section).boundingBox()
+      expect(box).not.toBeNull()
+      expect(box!.x + box!.width, `${section} clipped at ${width}px`).toBeLessThanOrEqual(width + 1)
+    }
   }
 })
 
-test('architecture can be used from the keyboard', async ({ page }) => {
-  await page.goto('/')
-  const claude = page.getByRole('button', { name: /Claude Code.*Builds in the local project/i })
-  await claude.focus()
-  await expect(claude).toBeFocused()
-  await page.keyboard.press('Enter')
-  await expect(claude).toHaveAttribute('aria-pressed', 'true')
-  await expect(page.getByText(/Claude Code edits the local project/i)).toBeVisible()
-})
+test('reduced motion is static, normal motion runs and visible copy has no long dashes', async ({ browser }) => {
+  const reducedContext = await browser.newContext({ reducedMotion: 'reduce', viewport: { width: 390, height: 844 } })
+  const reducedPage = await reducedContext.newPage()
+  await reducedPage.goto('http://127.0.0.1:4173/')
+  await expect(reducedPage.locator('.hero-copy')).toHaveCSS('animation-name', 'none')
+  const visibleText = await reducedPage.locator('body').innerText()
+  expect(visibleText).not.toMatch(/[–—]/)
+  await reducedContext.close()
 
-test('delivery paths stay explicit at desktop and mobile widths', async ({ page }) => {
-  for (const width of [390, 1180, 1440]) {
-    await page.setViewportSize({ width, height: 900 })
-    await page.goto('/')
-    await expect(page.getByRole('group', { name: 'Build path from Claude Code to the app' })).toBeVisible()
-    await expect(page.getByRole('group', { name: 'Domain path from GoDaddy to Vercel' })).toBeVisible()
-    await expect(page.getByText('GoDaddy DNS points to Vercel', { exact: true })).toBeVisible()
-  }
+  const normalContext = await browser.newContext({ reducedMotion: 'no-preference', viewport: { width: 1440, height: 1000 } })
+  const normalPage = await normalContext.newPage()
+  await normalPage.goto('http://127.0.0.1:4173/')
+  await expect(normalPage.locator('.hero-copy')).toHaveCSS('animation-name', 'hero-in')
+  await expect(normalPage.locator('.hero-flow')).toHaveCSS('animation-name', 'flow-in')
+  await normalContext.close()
 })
