@@ -7,3 +7,5 @@ regions.json
 *.tsbuildinfo
 .DS_Store
 .vercel
+.codex/
+.cursor/
